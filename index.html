@@ -1,112 +1,345 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Сахбетдинова</title>
-  <link href="style.css" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Advanced Cost Calculator</title>
+<style>
+  :root {
+    --primary: #4a90e2;
+    --secondary: #50e3c2;
+    --bg: #f5f7fa;
+    --text: #333;
+    --border: #ddd;
+    --shadow: rgba(0,0,0,0.1);
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg); color: var(--text);
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; padding: 2rem;
+  }
+  .calculator {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 8px 24px var(--shadow);
+    max-width: 480px;
+    width: 100%;
+    padding: 2rem 2.5rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .calculator h1 {
+    margin: 0 0 1rem;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--primary);
+    text-align: center;
+  }
+  label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 0.5rem;
+    transition: border-color 0.3s;
+  }
+  input[type="number"]:focus,
+  select:focus {
+    border-color: var(--primary);
+    outline: none;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .full-width {
+    grid-column: 1 / -1;
+  }
+  button {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background 0.3s;
+  }
+  button:hover {
+    background: var(--secondary);
+  }
+  .result {
+    background: #f0f9ff;
+    border: 2px solid var(--primary);
+    border-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--primary);
+  }
+  .flex-center {
+    display: flex;
+    justify-content: center;
+  }
+  /* Tooltip */
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+    border-bottom: 1px dotted var(--primary);
+  }
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 220px;
+    background-color: var(--primary);
+    color: #fff;
+    text-align: center;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    position: absolute;
+    z-index: 10;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.85rem;
+  }
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+</style>
 </head>
 <body>
-  <div
-  class="flex items-center justify-center min-h-screen bg gradient-to-br from-indigo-500 to-purple-700 p-4"
->
-  <div class="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
-    <h2 class="text-2x1 font-bold text-center text-indigo-600">
-      SIP Calculator
-    </h2>
-    <div class="mt-4">
-      <label class="font-medium text-gray-700">Monthly Investment</label>
-      <input
-        type="range"
-        id="investment"
-        min="500"
-        max="20000"
-        step="500"
-        value="5000"
-        class="w-full mt-2 accent-indigo-600"
-      />
-      <span class="block text-indigo-700 font-medium mt-1">
-        <span id="investmentVal">5000</span>
-      </span>
+  <form class="calculator" id="costCalc" novalidate>
+    <h1>Advanced Cost Calculator</h1>
+    <div class="row">
+      <div>
+        <label for="quantity">Quantity <span class="tooltip">?
+          <span class="tooltiptext">Number of items to purchase</span>
+        </span></label>
+        <input type="number" id="quantity" name="quantity" min="1" step="1" value="1" required />
+      </div>
+      <div>
+        <label for="unitPrice">Unit Price ($) <span class="tooltip">?
+          <span class="tooltiptext">Price per single item</span>
+        </span></label>
+        <input type="number" id="unitPrice" name="unitPrice" min="0" step="0.01" value="0.00" required />
+      </div>
     </div>
-    <div class="mt-4">
-      <label class="font-medium text-gray-700">Investment Tenure (Years)</label>
-      <input
-        type="range"
-        id="tenure"
-        min="1"
-        max="30"
-        step="1"
-        value="10"
-        class="w-full mt-2 accent-indigo-600"
-      />
-      <span class="block text-indigo-700 font-semibold mt-1">
-        <span id="tenureValue">10</span>Years
-      </span>
-    </div>
-    <div class="mt-4">
-      <label class="font-medium text-gray-700">Expected Return Rate (%)</label>
-      <input
-        type="range"
-        id="rate"
-        min="5"
-        max="20"
-        step="0.5"
-        value="12"
-        class="w-full mt-2 accent-indigo-600"
-      />
-      <span class="block text-indigo-700 font-semibold mt-1">
-        <span id="rateValue">10</span>%
-      </span>
-    </div>
-    <div class="mt-6 p-4 bg-gray-100 rounded-lg">
-      <p class="text-gray-700 font-medium">Estimated Maturity Amount:</p>
-      <p class="text-2x1 font-bold text-green-600 mt-2">&#8377
-        <span id="maturityAmount">0</span>
-      </p>
-    </div>
-    <div class="mt-4 flex gap-4">
-      <button
-      onclick="calculateSIP()"
-        class="w-1/2 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700"
-      >
-        Calculate
-      </button>
-      <button
-        class="w-1/2 py-2 bg-gray-300 text-gray-800 rounded-lg font-semibold hover:bg-gray-400"
-      >
-        Reset
-      </button>
-    </div>
-  </div>
-</div>
-<script is-inline>
-  function calculateSIP() {
-    let investment = parseInt(document.getElementById("investment").value);
-    let tenure = parseInt(document.getElementById("tenure").value);
-    let rate = parseInt(document.getElementById("rate").value) / 100 / 12;
-    let months = tenure * 12;
-    let maturity =
-      investment * ((Math.pow(1 + rate, months) - 1) / rate) * (1 + rate);
-    document.getElementById("maturityAmount").innerText = maturity.toFixed(2);
-  }
-  function resetCalculator() {
-    document.getElementById('investment').value = 5000;
-    document.getElementById('tenure').value = 10;
-    document.getElementById('rate').value = 12;
 
-    document.getElementById('investmentValue').innerText = '5000';
-    document.getElementById('tenureValue').innerText = '10';
-    document.getElementById('rateValue').innerText = '12';
-    document.getElementById('maturityAmount').innerText = '0';
+    <div class="row">
+      <div>
+        <label for="taxRate">Tax Rate (%) <span class="tooltip">?
+          <span class="tooltiptext">Applicable sales tax percentage</span>
+        </span></label>
+        <input type="number" id="taxRate" name="taxRate" min="0" max="100" step="0.01" value="8.25" required />
+      </div>
+      <div>
+        <label for="discountType">Discount Type <span class="tooltip">?
+          <span class="tooltiptext">Choose discount method</span>
+        </span></label>
+        <select id="discountType" name="discountType">
+          <option value="none" selected>No Discount</option>
+          <option value="percent">Percentage (%)</option>
+          <option value="fixed">Fixed Amount ($)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row full-width" id="discountValueContainer" style="display:none;">
+      <label for="discountValue">Discount Value <span class="tooltip">?
+        <span class="tooltiptext">Enter discount value based on type</span>
+      </span></label>
+      <input type="number" id="discountValue" name="discountValue" min="0" step="0.01" value="0" />
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="shipping">Shipping Method <span class="tooltip">?
+          <span class="tooltiptext">Select shipping option</span>
+        </span></label>
+        <select id="shipping" name="shipping">
+          <option value="0" selected>Free ($0.00)</option>
+          <option value="5">Standard ($5.00)</option>
+          <option value="15">Express ($15.00)</option>
+          <option value="30">Overnight ($30.00)</option>
+        </select>
+      </div>
+      <div>
+        <label for="couponCode">Coupon Code <span class="tooltip">?
+          <span class="tooltiptext">Apply coupon for extra discount</span>
+        </span></label>
+        <input type="text" id="couponCode" name="couponCode" placeholder="e.g. SAVE10" />
+      </div>
+    </div>
+
+    <div class="flex-center">
+      <button type="submit">Calculate Total</button>
+    </div>
+
+    <div class="result" aria-live="polite" id="result" tabindex="0" role="region" aria-label="Calculation result">
+      Total Cost: $0.00
+    </div>
+  </form>
+
+<script>
+(() => {
+  const form = document.getElementById('costCalc');
+  const discountTypeEl = form.discountType;
+  const discountValueContainer = document.getElementById('discountValueContainer');
+  const discountValueEl = form.discountValue;
+  const resultEl = document.getElementById('result');
+  const couponInput = form.couponCode;
+
+  // Predefined coupon codes with discount rules
+  const coupons = {
+    SAVE10: { type: 'percent', value: 10 },       // 10% off
+    FLAT5: { type: 'fixed', value: 5 },           // $5 off
+    FREESHIP: { type: 'shipping', value: 100 },  // Full shipping cost discount
+    VIP20: { type: 'percent', value: 20 },        // 20% off
+  };
+
+  // Format number to currency string with 2 decimals
+  const toCurrency = (num) => num.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+
+  // Validate positive numbers with optional max
+  function validateInput(input) {
+    const val = parseFloat(input.value);
+    if (isNaN(val) || val < parseFloat(input.min || '0')) return false;
+    if (input.max && val > parseFloat(input.max)) return false;
+    return true;
   }
 
-  document.querySelectorAll("input[type='range']").forEach(input => {
-    input.addEventListener('input', function(){
-      document.getElementById(this.id + 'Value').innerText = this.value;
-    });
-  })
+  // Show or hide discount value input based on discount type
+  discountTypeEl.addEventListener('change', () => {
+    if (discountTypeEl.value === 'none') {
+      discountValueContainer.style.display = 'none';
+      discountValueEl.value = '0';
+    } else {
+      discountValueContainer.style.display = 'block';
+      discountValueEl.min = '0';
+      discountValueEl.value = '0';
+      discountValueEl.step = discountTypeEl.value === 'percent' ? '0.01' : '0.01';
+      discountValueEl.max = discountTypeEl.value === 'percent' ? '100' : '';
+    }
+  });
+
+  // Main calculation logic
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    // Validate inputs
+    if (!validateInput(form.quantity)) {
+      alert('Please enter a valid quantity (>=1).');
+      form.quantity.focus();
+      return;
+    }
+    if (!validateInput(form.unitPrice)) {
+      alert('Please enter a valid unit price (>=0).');
+      form.unitPrice.focus();
+      return;
+    }
+    if (!validateInput(form.taxRate)) {
+      alert('Please enter a valid tax rate (0-100).');
+      form.taxRate.focus();
+      return;
+    }
+    if (discountTypeEl.value !== 'none' && !validateInput(discountValueEl)) {
+      alert('Please enter a valid discount value.');
+      discountValueEl.focus();
+      return;
+    }
+
+    // Extract values
+    const quantity = parseInt(form.quantity.value, 10);
+    const unitPrice = parseFloat(form.unitPrice.value);
+    const taxRate = parseFloat(form.taxRate.value) / 100;
+    const discountType = discountTypeEl.value;
+    const discountValue = parseFloat(discountValueEl.value) || 0;
+    const shippingCost = parseFloat(form.shipping.value);
+    const couponCode = couponInput.value.trim().toUpperCase();
+
+    // Calculate subtotal before discount and tax
+    const subtotal = quantity * unitPrice;
+
+    // Calculate discount from discount input
+    let discountAmount = 0;
+    if (discountType === 'percent') {
+      discountAmount = subtotal * (discountValue / 100);
+    } else if (discountType === 'fixed') {
+      discountAmount = discountValue;
+    }
+
+    // Cap discount amount to subtotal
+    discountAmount = Math.min(discountAmount, subtotal);
+
+    // Subtotal after discount
+    const afterDiscount = subtotal - discountAmount;
+
+    // Calculate tax on amount after discount
+    const taxAmount = afterDiscount * taxRate;
+
+    // Initialize shipping discount (from coupon)
+    let shippingDiscount = 0;
+
+    // Initialize coupon discount amount
+    let couponDiscount = 0;
+
+    // Apply coupon code if valid
+    if (couponCode && coupons[couponCode]) {
+      const coupon = coupons[couponCode];
+      switch (coupon.type) {
+        case 'percent':
+          couponDiscount = (afterDiscount + taxAmount) * (coupon.value / 100);
+          break;
+        case 'fixed':
+          couponDiscount = coupon.value;
+          break;
+        case 'shipping':
+          // Shipping discount equals shipping cost capped at shippingCost
+          shippingDiscount = Math.min(shippingCost, coupon.value);
+          break;
+      }
+    }
+
+    // Cap coupon discount to total before coupon
+    const preCouponTotal = afterDiscount + taxAmount + shippingCost;
+    couponDiscount = Math.min(couponDiscount, preCouponTotal);
+
+    // Final total calculation
+    const finalTotal = preCouponTotal - couponDiscount - shippingDiscount;
+
+    // Display results with breakdown in accessible manner
+    resultEl.innerHTML = `
+      <strong>Total Cost: ${toCurrency(Math.max(finalTotal, 0))}</strong>
+      <br/>
+      <small>
+        (Subtotal: ${toCurrency(subtotal)}<br/>
+        Discount: -${toCurrency(discountAmount)}<br/>
+        Tax: +${toCurrency(taxAmount)}<br/>
+        Shipping: +${toCurrency(shippingCost)}<br/>
+        Coupon Discount: -${toCurrency(couponDiscount)}<br/>
+        Shipping Discount: -${toCurrency(shippingDiscount)})
+      </small>
+    `;
+    resultEl.focus();
+  });
+})();
 </script>
-
 </body>
 </html>
